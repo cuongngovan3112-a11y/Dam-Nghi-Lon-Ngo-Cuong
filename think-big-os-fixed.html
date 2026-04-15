@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Think Big OS — Dám Nghĩ Lớn</title>
+<!--
+  Nguồn: "Dám Nghĩ Lớn / The Magic of Thinking Big" — David J. Schwartz
+  Thiết kế: Ngô Cương Think Big Identity Operating System
+  Phiên bản: ULTRA-ELITE v4 | 2026-04-07
+-->
+<style>
+:root{--bg:#06060b;--s1:#0e0e18;--s2:#151522;--s3:#1c1c2e;--c1:#6c5ce7;--c2:#a29bfe;--c3:#fd79a8;--c4:#fdcb6e;--c5:#00b894;--c6:#74b9ff;--c7:#e17055;--tx:#eeeef5;--tx2:#9595ad;--tx3:#5a5a72;--r:14px;--sh:0 4px 24px #0005;--gd:linear-gradient(135deg,#6c5ce7,#a29bfe,#fd79a8);--gd2:linear-gradient(135deg,#00b894,#74b9ff);--f:'Segoe UI',system-ui,sans-serif;--nav-w:220px}
+[data-t=l]{--bg:#f0eeff;--s1:#e8e4fc;--s2:#ddd8f8;--s3:#fff;--tx:#111128;--tx2:#4a4a6a;--tx3:#8888a0;--sh:0 4px 24px #6c5ce715}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;height:100%}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.65;min-height:100vh;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--c1);border-radius:3px}
+.hide{display:none!important}
+
+/* ===== LAYOUT: MOBILE (bottom nav) ===== */
+#app{max-width:600px;margin:0 auto;padding:12px 16px 100px;min-height:100vh}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid #6c5ce722;z-index:99;backdrop-filter:blur(16px);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav>div{max-width:600px;margin:0 auto;display:flex}
+nav button{flex:1;background:none;border:none;color:var(--tx3);font-size:9px;padding:8px 2px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.2s;min-height:52px}
+nav button.on{color:var(--c1)}nav button:hover{color:var(--c2)}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tgl{position:fixed;top:12px;right:12px;z-index:100;background:var(--s2);border:1px solid #6c5ce722;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s}
+.tgl:hover{background:var(--c1)}
+
+/* ===== LAYOUT: DESKTOP (side nav) ===== */
+@media(min-width:768px){
+  body{display:flex}
+  nav{position:fixed;top:0;left:0;bottom:0;right:auto;width:var(--nav-w);border-top:none;border-right:1px solid #6c5ce722;padding-bottom:0;overflow-y:auto}
+  nav>div{flex-direction:column;max-width:none;height:100%;padding:16px 0 20px}
+  nav button{flex:none;flex-direction:row;font-size:13px;padding:11px 18px;justify-content:flex-start;gap:12px;text-align:left;border-radius:10px;margin:1px 8px;min-height:auto}
+  nav svg{width:20px;height:20px;flex-shrink:0}
+  nav button.on{background:var(--c1)22;color:var(--c1)}
+  #app{margin-left:var(--nav-w);margin-right:auto;max-width:760px;padding:20px 28px 40px;width:calc(100% - var(--nav-w))}
+  .tgl{top:14px;right:20px}
+  /* Nav brand */
+  #nav::before{content:'⚡ THINK BIG OS';display:block;font-size:13px;font-weight:800;background:var(--gd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;padding:8px 20px 16px;letter-spacing:.5px;border-bottom:1px solid #6c5ce722;margin-bottom:8px}
+  /* Wider cards on desktop */
+  .scroll-x>div{min-width:320px}
+  .grid2{grid-template-columns:repeat(3,1fr)}
+  .fc{height:240px}
+  .day-grid{gap:6px}
+  .day-cell{font-size:13px}
+  .stat>div{padding:14px 10px}
+  .stat span{font-size:26px}
+}
+@media(min-width:1100px){
+  :root{--nav-w:240px}
+  #app{max-width:860px}
+}
+
+/* COMMON */
+.hdr{text-align:center;padding:20px 0 14px}
+.hdr h1{font-size:24px;font-weight:800;background:var(--gd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px}
+.hdr p{color:var(--tx2);font-size:12px;margin-top:4px}
+.card{background:var(--s2);border-radius:var(--r);padding:16px;margin:10px 0;border:1px solid #6c5ce712;transition:.2s}
+.card:hover{border-color:#6c5ce733}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-p{background:var(--gd);color:#fff}.btn-p:hover{opacity:.9;transform:translateY(-1px)}
+.btn-s{background:var(--s3);color:var(--tx);border:1px solid #6c5ce733}.btn-s:hover{border-color:var(--c1)}
+.btn-g{background:var(--gd2);color:#fff}.btn-g:hover{opacity:.9}
+.btn-d{background:var(--c7);color:#fff}.btn-d:hover{opacity:.85}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.badge{background:var(--c4);color:#000;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:800}
+.pbar{height:6px;background:var(--s1);border-radius:3px;overflow:hidden;margin:8px 0}
+.pbar>div{height:100%;background:var(--gd);border-radius:3px;transition:width .5s}
+.stat{display:flex;gap:8px;flex-wrap:wrap}
+.stat>div{flex:1;min-width:70px;text-align:center;background:var(--s3);border-radius:10px;padding:10px 6px}
+.stat span{display:block;font-size:20px;font-weight:800;background:var(--gd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat small{font-size:9px;color:var(--tx2)}
+label.opt{display:block;padding:11px 14px;margin:5px 0;background:var(--s3);border-radius:10px;cursor:pointer;border:2px solid transparent;transition:.2s;font-size:13px}
+label.opt:hover{border-color:var(--c2)}
+label.opt.sel{border-color:var(--c1);background:rgba(108,92,231,.1)}
+label.opt input{display:none}
+.fb{padding:12px;border-radius:10px;margin:8px 0;font-size:12px;line-height:1.6}
+.fb.ok{background:#00b89418;border-left:3px solid var(--c5)}
+.fb.no{background:#e1705518;border-left:3px solid var(--c7)}
+textarea,input[type=text]{width:100%;padding:10px 12px;border:1px solid #6c5ce733;border-radius:10px;background:var(--s1);color:var(--tx);font-family:var(--f);font-size:13px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:none;border-color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;margin:2px;background:var(--s3);color:var(--tx2)}
+.chip.on{background:var(--c1);color:#fff}
+h2{font-size:17px;font-weight:700;margin:16px 0 8px}
+h3{font-size:14px;font-weight:700;color:var(--c2);margin:10px 0 6px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,#6c5ce733,transparent);margin:16px 0}
+.scroll-x{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.scroll-x::-webkit-scrollbar{height:3px}
+.scroll-x>div{min-width:75%;scroll-snap-align:start;flex-shrink:0}
+.ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.row{display:flex;align-items:center;gap:10px}
+.streak-fire{font-size:28px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page{animation:fadeIn .3s}
+.fc{perspective:600px;cursor:pointer;height:200px;margin:10px 0}
+.fc-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.fc.flip .fc-inner{transform:rotateY(180deg)}
+.fc-f,.fc-b{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;font-size:14px;line-height:1.6}
+.fc-f{background:var(--gd);color:#fff;font-weight:700;font-size:16px}
+.fc-b{background:var(--s2);border:1px solid #6c5ce733;transform:rotateY(180deg);flex-direction:column;gap:8px}
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-cell{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--s3);color:var(--tx3);cursor:pointer;transition:.2s}
+.day-cell.done{background:var(--c5);color:#fff}
+.day-cell.today{border:2px solid var(--c1)}
+.day-cell.future{opacity:.4}
+@media(max-width:400px){.stat>div{min-width:55px}.stat span{font-size:16px}.hdr h1{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="tgl" onclick="toggleTheme()" title="Đổi giao diện">🌓</div>
+<div id="app"></div>
+<nav><div id="nav"></div></nav>
+
+<script>
+// ============ STATE ============
+const S={
+  page:'dash',
+  auditDone:false,auditScore:0,auditAnswers:[],
+  excResult:null,
+  confScore:0,
+  goals:[],
+  identity:'',commitment:'',
+  streak:0,lastDay:'',daysDone:[],
+  quizIdx:0,quizScore:0,quizDone:false,
+  fcIdx:0,fcFlip:false,
+  leaderIdx:0,leaderChoice:null,
+  theme:'d',
+  principles_done:[]
+};
+
+// ============ STORAGE ============
+const LS={
+  save(){localStorage.setItem('tbos',JSON.stringify(S))},
+  load(){try{const d=JSON.parse(localStorage.getItem('tbos'));if(d)Object.assign(S,d)}catch(e){}},
+  exportJSON(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='thinkbig_backup.json';a.click()},
+  importJSON(f){const r=new FileReader();r.onload=e=>{try{Object.assign(S,JSON.parse(e.target.result));LS.save();render()}catch(x){alert('File không hợp lệ')}};r.readAsText(f)}
+};
+
+// ============ DATA ============
+const PRINCIPLES=[
+{id:1,icon:'🔥',title:'Tin vào thành công',sum:'Sức mạnh niềm tin khúi dậy khả năng tiềm ẩn. Khi bạn tin "tôi-có-thể", cách thức thực hiện sẽ xuất hiện.',
+book:'Niềm tin tạo ra sức mạnh, khơi dậy năng lực tiềm ẩn và tiếp thêm nghị lực. Khi bạn tin tôi-có-thể-làm-được thì cách-thức-thực-hiện sẽ xuất hiện.',
+sign:'Hay nói "tôi không thể", sợ thử điều mới, đánh giá thấp bản thân',
+action:'Viết ra 3 điều bạn tin mình có thể đạt được trong 1 năm tới. Đọc to mỗi sáng.',
+ifthen:'Nếu tôi nghe tiếng nói "mình không đủ giỏi" → Tôi lập tức nhớ lại 1 thành công trong quá khứ và nói "Tôi đã làm được, tôi sẽ làm được".',
+commit:'Dán 1 câu khẳng định lên gương phòng tắm',remove:'Bỏ thói quen so sánh mình với người khác trên MXH',
+micro:'Niềm tin là "nhà máy sản xuất ý tưởng" — hãy giao việc cho ông Chiến Thắng, sa thải ông Thất Bại.'},
+{id:2,icon:'💊',title:'Chữa bệnh "Tự bào chữa"',sum:'Excusitis — bệnh viện cớ — là mầm mống của thất bại. Người thành công không bao giờ viện cớ.',
+book:'Càng thành công bao nhiêu, càng ít tự biện hộ bấy nhiêu. Bệnh tự bào chữa có 4 biểu hiện: đổ lỗi cho sức khỏe, trí tuệ, tuổi tác, may rủi.',
+sign:'Thường xuyên nói "tại vì…", "nếu mà…", "do hoàn cảnh…"',
+action:'Liệt kê 3 lý do bạn hay dùng để biện hộ. Viết bên cạnh mỗi lý do: "Điều này KHÔNG ngăn tôi thành công".',
+ifthen:'Nếu tôi bắt đầu viện cớ → Tôi dừng lại, hỏi: "Người thành công có viện cớ này không?" rồi hành động ngay.',
+commit:'Mỗi tối viết 1 hành động đã làm thay vì viện cớ',remove:'Xóa bỏ câu "Tôi không có thời gian" khỏi vốn từ',
+micro:'Không ai sinh ra là siêu nhân. Họ thành công vì biết giữ vững niềm tin, không phải vì may mắn.'},
+{id:3,icon:'🛡️',title:'Xây dựng sự tự tin',sum:'Hành động chế ngự sợ hãi. Càng do dự, sợ hãi càng lớn. Chỉ có hành động mới giúp ta chiến thắng.',
+book:'Chỉ có hành động mới giúp ta chế ngự nỗi sợ hãi. Hãy cô lập sợ hãi, xác định chính xác điều gì đang khiến bạn lo sợ, rồi hành động.',
+sign:'Tránh né tình huống mới, ngại phát biểu, không dám nhìn thẳng vào mắt người khác',
+action:'Làm 1 việc bạn đang sợ/ngại NGAY HÔM NAY (gọi điện, phát biểu, hỏi sếp).',
+ifthen:'Nếu tôi cảm thấy sợ hãi → Tôi đếm 5-4-3-2-1 rồi HÀNH ĐỘNG ngay lập tức, không suy nghĩ thêm.',
+commit:'Ngồi hàng ghế đầu tiên trong mọi cuộc họp',remove:'Bỏ thói quen "để mai tính"',
+micro:'Ngân hàng tâm trí chỉ trả lãi tích cực nếu bạn gửi vào suy nghĩ tích cực.'},
+{id:4,icon:'🚀',title:'Suy nghĩ đột phá',sum:'Từ ngữ tạo hình ảnh trong tâm trí. Hãy dùng từ ngữ tích cực để vẽ nên bức tranh thành công.',
+book:'Người dám nghĩ lớn là chuyên gia tạo dựng chuỗi hình ảnh tiên phong, tích cực. Đừng nhìn hiện tại mà hãy nhìn triển vọng tương lai.',
+sign:'Dùng từ tiêu cực, chỉ thấy vấn đề mà không thấy cơ hội, tập trung vào chuyện nhỏ',
+action:'Thay 3 câu nói tiêu cực thường dùng bằng phiên bản tích cực. Viết ra giấy.',
+ifthen:'Nếu tôi sắp nói "không thể" → Tôi thay bằng "Hãy tìm cách" và đề xuất 1 giải pháp.',
+commit:'Mỗi cuộc họp đóng góp ít nhất 1 ý tưởng xây dựng',remove:'Ngừng than phiền về thời tiết, giao thông, đồng nghiệp',
+micro:'Thực hiện ý tưởng lớn không khó hơn ý tưởng nhỏ — thậm chí còn đơn giản hơn.'},
+{id:5,icon:'👑',title:'Bạn nghĩ bạn là ai, bạn sẽ là người đó',sum:'Tùy vào suy nghĩ, bạn sẽ hành động. Tùy hành động, người khác sẽ đối xử với bạn tương xứng.',
+book:'Hãy tự tặng mình những lời động viên nhiều lần mỗi ngày. Xây dựng đoạn "phim quảng cáo" cho chính bạn.',
+sign:'Ăn mặc cẩu thả, không tự tin về ngoại hình, coi thường công việc mình đang làm',
+action:'Viết 1 đoạn "Quảng cáo bản thân" 5 câu. Đọc to trước gương mỗi sáng.',
+ifthen:'Nếu tôi cảm thấy nhỏ bé → Tôi hỏi "Người quan trọng sẽ làm gì?" rồi làm theo.',
+commit:'Kiểm tra ngoại hình thật kỹ trước khi ra khỏi nhà',remove:'Bỏ thói quen tự hạ thấp bản thân trước mặt người khác',
+micro:'Mỗi cá nhân là sản phẩm từ ý chí của chính mình.'},
+{id:6,icon:'🌍',title:'Kiểm soát môi trường',sum:'Trí não phản ánh "thức ăn tinh thần". Hãy chọn bạn bè, thông tin, môi trường giúp bạn nghĩ lớn.',
+book:'Gần gũi với người có tầm nhìn lớn sẽ nâng tầm suy nghĩ. Tránh xa người tiêu cực — thuốc độc tinh thần.',
+sign:'Bạn bè hay phàn nàn, xem nhiều tin tiêu cực, ít tiếp xúc người thành công',
+action:'Liệt kê 3 người tích cực nhất trong đời bạn. Liên lạc 1 người hôm nay.',
+ifthen:'Nếu ai đó nói "cậu không thể" → Tôi coi đó là thử thách để chứng minh họ sai.',
+commit:'Tham gia 1 nhóm/cộng đồng người có tư duy phát triển',remove:'Giảm thời gian đọc tin tiêu cực còn ≤15 phút/ngày',
+micro:'Đừng để người có suy nghĩ nhỏ bé phá hủy kế hoạch thành công của bạn.'},
+{id:7,icon:'💎',title:'Thái độ đúng đắn',sum:'Để khích lệ người khác, trước tiên bạn phải khích lệ chính mình. Hãy loan truyền tin tốt.',
+book:'Nhiệt tình là thái độ. Hãy phục vụ trước, tiền bạc sẽ tự nó đến sau. Luôn cho nhiều hơn mong đợi.',
+sign:'Thiếu nhiệt tình, chỉ nghĩ đến lợi ích bản thân, tiết kiệm lời khen',
+action:'Gửi 1 tin nhắn khen ngợi chân thành cho đồng nghiệp/bạn bè NGAY BÂY GIỜ.',
+ifthen:'Nếu tôi gặp ai → Tôi chủ động mỉm cười, bắt tay nồng nhiệt, gọi tên họ.',
+commit:'Mỗi ngày khen ngợi ít nhất 3 người',remove:'Bỏ thói quen "ngồi lê đôi mách" nói xấu sau lưng',
+micro:'Phục vụ trước, tiền bạc tự đến sau — luôn luôn là như vậy.'},
+{id:8,icon:'⚡',title:'Thói quen hành động',sum:'Người chủ động luôn hoàn thành. Người thụ động luôn trì hoãn. Đừng chờ hoàn hảo — hãy bắt đầu.',
+book:'"Ngay bây giờ" là cụm từ kỳ diệu. Ngày mai, tuần sau thường đồng nghĩa với "không bao giờ".',
+sign:'Hay trì hoãn, chờ "đúng lúc", chuẩn bị quá lâu mà không bắt đầu',
+action:'Chọn 1 việc bạn đang trì hoãn. Làm bước đầu tiên NGAY BÂY GIỜ (≤5 phút).',
+ifthen:'Nếu tôi muốn trì hoãn → Tôi đếm 5-4-3-2-1, đứng dậy và làm bước nhỏ nhất.',
+commit:'Viết 3 việc quan trọng nhất mỗi tối cho ngày mai',remove:'Xóa bỏ câu "Để khi nào rảnh"',
+micro:'Ý tưởng chỉ có giá trị khi được biến thành hành động.'},
+{id:9,icon:'🏆',title:'Chuyển bại thành thắng',sum:'Thất bại chỉ là trạng thái tinh thần. Hãy học từ thất bại, kết hợp kiên trì với thử nghiệm.',
+book:'Người thành công khi gặp thất bại: bật dậy, ghi nhận bài học, quên đi thất bại và tiến lên phía trước.',
+sign:'Sợ thất bại, đổ lỗi cho hoàn cảnh, bỏ cuộc sau lần đầu không thành',
+action:'Viết ra 1 thất bại gần đây. Bên cạnh viết: bài học rút ra + hành động tiếp theo.',
+ifthen:'Nếu tôi thất bại → Tôi hỏi: "Bài học ở đây là gì?" và "Tôi sẽ làm khác thế nào?".',
+commit:'Mỗi tuần review 1 sai lầm và chuyển thành kinh nghiệm',remove:'Ngừng nói "Đời là thế" — hãy tìm nguyên nhân thật sự',
+micro:'Trong bất cứ tình huống nào, luôn có mặt tích cực. Hãy tìm ra nó.'}
+];
+
+const AUDIT_Q=[
+{q:'Khi đối mặt với mục tiêu lớn, suy nghĩ đầu tiên của bạn là gì?',opts:['Mình chắc không làm nổi','Khó nhưng có thể thử','Mình sẽ tìm cách làm được','Mình CHẮC CHẮN sẽ làm được'],scores:[1,2,3,4]},
+{q:'Khi bị từ chối hoặc thất bại, bạn thường:',opts:['Bỏ cuộc ngay','Buồn rất lâu rồi mới tiếp','Rút kinh nghiệm và thử lại','Xem đó là bước đệm, hành động ngay'],scores:[1,2,3,4]},
+{q:'Bạn có hay viện cớ (sức khỏe, tuổi, tiền, hoàn cảnh) khi không đạt mục tiêu?',opts:['Rất thường xuyên','Khá thường','Thỉnh thoảng','Hầu như không bao giờ'],scores:[1,2,3,4]},
+{q:'Mức độ tự tin của bạn khi phát biểu trước đám đông?',opts:['Rất sợ, tránh hoàn toàn','Lo lắng nhiều','Hơi hồi hộp nhưng vẫn làm','Tự tin và chủ động'],scores:[1,2,3,4]},
+{q:'Bạn có thường xuyên đặt mục tiêu rõ ràng cho 1-5 năm tới?',opts:['Chưa bao giờ','Nghĩ nhưng không viết ra','Có viết nhưng ít xem lại','Có kế hoạch chi tiết và review thường xuyên'],scores:[1,2,3,4]},
+{q:'Khi nghe người khác nói "điều đó không thể", bạn:',opts:['Đồng ý và từ bỏ','Phân vân rồi bỏ','Suy nghĩ lại nhưng vẫn thử','Coi đó là động lực, quyết tâm hơn'],scores:[1,2,3,4]},
+{q:'Bạn dùng từ ngữ nào nhiều hơn trong ngày?',opts:['"Không thể", "Thua rồi"','"Khó quá", "Chắc không được"','"Thử xem sao"','"Chắc chắn có cách", "Mình sẽ làm được"'],scores:[1,2,3,4]},
+{q:'Môi trường bạn bè xung quanh bạn:',opts:['Toàn người hay phàn nàn','Phần lớn tiêu cực','Hỗn hợp tích cực/tiêu cực','Phần lớn là người có tầm nhìn, cầu tiến'],scores:[1,2,3,4]},
+{q:'Khi cần làm việc khó/không thích, bạn:',opts:['Trì hoãn đến phút cuối','Làm qua loa cho xong','Cố gắng hoàn thành tốt','Bắt đầu ngay và tìm cách làm xuất sắc'],scores:[1,2,3,4]},
+{q:'Bạn có thường tự khen ngợi và động viên bản thân?',opts:['Không bao giờ','Hiếm khi','Thỉnh thoảng','Mỗi ngày — tôi biết mình có giá trị'],scores:[1,2,3,4]},
+{q:'Khi thấy người khác thành công, suy nghĩ đầu tiên:',opts:['Ghen tị, "Do họ may"','Ước gì mình được vậy','Học hỏi từ họ','Nếu họ làm được, mình cũng sẽ làm được'],scores:[1,2,3,4]},
+{q:'Bạn đánh giá công việc hiện tại của mình:',opts:['Chán ngắt, không quan trọng','Tạm được, không hơn','Khá tốt và đang phát triển','Rất quan trọng — bước đệm cho mục tiêu lớn'],scores:[1,2,3,4]},
+{q:'Lần cuối bạn chủ động học điều mới (sách, khóa học):',opts:['Không nhớ / > 6 tháng','3-6 tháng trước','Tháng trước','Tuần này'],scores:[1,2,3,4]},
+{q:'Khi gặp người lạ, bạn:',opts:['Tránh tiếp xúc','Chờ họ nói trước','Chào hỏi nếu cần','Chủ động tự giới thiệu, bắt tay nồng nhiệt'],scores:[1,2,3,4]},
+{q:'Bạn có sẵn sàng "phục vụ trước, nhận sau"?',opts:['Không, phải biết mình được gì','Tùy trường hợp','Thường sẵn sàng','Luôn luôn — đó là nguyên tắc sống'],scores:[1,2,3,4]},
+{q:'Tốc độ đi bộ của bạn thường:',opts:['Rất chậm, uể oải','Bình thường','Nhanh hơn trung bình','Nhanh, quyết đoán — thể hiện mục đích rõ ràng'],scores:[1,2,3,4]},
+{q:'Khi ai đó cư xử thô lỗ với bạn:',opts:['Tức giận và đáp trả','Buồn bã, suy nghĩ mãi','Hơi khó chịu nhưng bỏ qua','Thông cảm — hiểu rằng họ đang gặp khó khăn'],scores:[1,2,3,4]},
+{q:'Bạn có "kế hoạch cuộc đời" (công việc + gia đình + xã hội)?',opts:['Chưa bao giờ nghĩ đến','Mơ hồ trong đầu','Có suy nghĩ nhưng chưa chi tiết','Có kế hoạch rõ ràng, viết ra giấy'],scores:[1,2,3,4]},
+{q:'Bạn dành bao nhiêu thời gian mỗi ngày để suy ngẫm một mình?',opts:['0 phút','< 5 phút','10-20 phút','≥ 30 phút — tôi coi đó là đầu tư'],scores:[1,2,3,4]},
+{q:'Khát vọng lớn nhất hiện tại của bạn là:',opts:['Chỉ muốn ổn định','Cải thiện một chút','Đạt thành công đáng kể trong 3-5 năm','Trở thành người dẫn đầu trong lĩnh vực — không gì cản được'],scores:[1,2,3,4]}
+];
+
+const EXCUSITIS=[
+{type:'health',icon:'🏥',name:'Sức khỏe',q:'Bạn có hay nói "Sức khỏe tôi không tốt" để tránh làm việc gì đó?',
+cure:'Đừng nhắc đến bệnh tật. Đừng lo lắng thái quá. Hãy biết ơn vì bạn còn khỏe mạnh. "Thà bị mòn còn hơn bị gỉ."'},
+{type:'intelligence',icon:'🧠',name:'Trí tuệ',q:'Bạn có hay nghĩ "Tôi không đủ thông minh"?',
+cure:'Cách bạn sử dụng trí tuệ quan trọng hơn lượng thông minh bạn có. Thái độ tích cực > IQ cao. Hãy dùng não để tư duy sáng tạo, không phải để lưu trữ.'},
+{type:'age',icon:'📅',name:'Tuổi tác',q:'Bạn có hay nói "Tôi quá già/quá trẻ cho việc này"?',
+cure:'Hãy tính: bạn còn bao nhiêu năm làm việc hiệu quả? 30 tuổi = 80% phía trước. 50 tuổi = 40% sung sức nhất. Cuộc sống dài hơn bạn nghĩ rất nhiều.'},
+{type:'luck',icon:'🍀',name:'May rủi',q:'Bạn có hay cho rằng "Người ta thành công là do may mắn"?',
+cure:'Hãy chấp nhận quy luật nhân quả. Thành công đến từ chuẩn bị, kế hoạch và quyết tâm — không phải rút thăm may rủi. Đừng mong chờ may mắn, hãy TẠO may mắn.'}
+];
+
+const QUIZ=[
+{q:'Bạn có ý tưởng kinh doanh nhưng sợ thất bại. Theo tinh thần sách, bạn nên:',
+opts:['Chờ đến khi có đủ tiền mới bắt đầu','Hỏi ý kiến tất cả mọi người trước','Tin mình có thể, lên kế hoạch và bắt đầu bước nhỏ nhất NGAY','Tìm người giàu đỡ đầu'],
+correct:2,fb:'Niềm tin "Tôi có thể" sẽ kích hoạt trí óc tìm ra cách. Đừng chờ hoàn hảo — hãy bắt đầu với bước nhỏ nhất.',aha:true},
+{q:'Đồng nghiệp luôn nói: "Thị trường bão hòa, đừng cố." Bạn nên:',
+opts:['Nghe theo vì họ có kinh nghiệm','Tìm hiểu thêm rồi từ bỏ','Coi đó là thử thách, tìm 25% thị trường chưa khai thác','Than phiền cùng họ'],
+correct:2,fb:'Người có suy nghĩ lớn nhìn thấy 25% chưa khai thác thay vì 75% đã bão hòa. Đừng để người tiêu cực phá hủy kế hoạch của bạn.',aha:true},
+{q:'Bạn thất bại trong dự án quan trọng. Phản ứng tốt nhất:',
+opts:['Đổ lỗi cho đội ngũ','Cảm thấy mình kém cỏi','Phân tích nguyên nhân, rút bài học, thử cách mới','Bỏ lĩnh vực này sang lĩnh vực khác'],
+correct:2,fb:'Thất bại chỉ là trạng thái tinh thần. Hãy kết hợp kiên trì + thử nghiệm: giữ mục tiêu nhưng đổi cách làm.',aha:false},
+{q:'Bạn 40 tuổi muốn chuyển ngành. Suy nghĩ nào đúng nhất?',
+opts:['"Quá muộn rồi, cứ ở yên chỗ cũ"','"Mình còn 30 năm làm việc hiệu quả — bắt đầu ngay bây giờ"','"Để 45 tuổi hãy tính"','"Chỉ có người trẻ mới chuyển ngành được"'],
+correct:1,fb:'40 tuổi = mới dùng hết 40% thời gian làm việc. Bạn còn 60% phía trước — khoảng thời gian sung sức nhất! Đừng để tuổi tác cản bước.',aha:true},
+{q:'Trước khi gọi điện cho khách hàng quan trọng, bạn:',
+opts:['Uống cà phê, đi lòng vòng, trì hoãn','Nhờ người khác gọi hộ','Tự nhắc: "Tôi là người bán hàng giỏi nhất", rồi gọi ngay','Gửi email thay vì gọi'],
+correct:2,fb:'Hãy tự tặng mình lời động viên trước khi hành động. "Quảng cáo bản thân cho chính mình" — kỹ thuật đơn giản nhưng hiệu quả phi thường.',aha:false},
+{q:'Bạn ngồi ở cuối phòng họp, không phát biểu. Điều này cho thấy:',
+opts:['Bạn khiêm tốn','Bạn đang thiếu tự tin — hãy ngồi hàng đầu và phát biểu','Bạn là người biết lắng nghe','Đó là chỗ tốt nhất'],
+correct:1,fb:'Hãy ngồi hàng ghế đầu, nhìn thẳng vào mắt người khác, bước đi nhanh hơn 25%, và phát biểu ý kiến. Đó là "vitamin" cho sự tự tin.',aha:false},
+{q:'Nhân viên làm sai. Cách xử lý của người lãnh đạo giỏi:',
+opts:['Mắng trước mặt mọi người','Lờ đi, tự họ sẽ biết','Nói riêng, khen điểm tốt trước, rồi chỉ ra điều cần cải thiện, khen lần nữa','Sa thải ngay'],
+correct:2,fb:'Công thức 4 bước của Bob: (1) Nói riêng (2) Khen điểm tốt (3) Chỉ ra cần cải thiện (4) Khen lại. Đối xử nhân văn = nhận được trung thành.',aha:false}
+];
+
+const FLASHCARDS=[
+{front:'Khi bạn nghe tiếng nói "Mình không đủ giỏi"…',back:'→ Nhớ: Niềm tin tạo sức mạnh. Hãy nói "Tôi có thể" và tìm 1 bằng chứng thành công trong quá khứ. If-Then: Nếu tự ti → Đọc to "Quảng cáo bản thân" 60 giây.'},
+{front:'Khi bạn sắp viện cớ "Tại hoàn cảnh…"',back:'→ Nhớ: Excusitis là bệnh. Hãy hỏi: "Người thành công có viện cớ này không?" Đáp án luôn là KHÔNG. If-Then: Nếu viện cớ → Viết ra 1 hành động thay thế.'},
+{front:'Khi bạn sợ phải gọi điện/gặp người quan trọng…',back:'→ Nhớ: Hành động chữa sợ hãi. Đếm 5-4-3-2-1 → HÀNH ĐỘNG. Sợ hãi biến mất ngay sau bước đầu tiên. If-Then: Nếu sợ → Đếm ngược rồi làm ngay.'},
+{front:'Khi bạn thấy công việc tẻ nhạt, không quan trọng…',back:'→ Nhớ: Bạn nghĩ công việc thế nào, bạn sẽ làm thế đó. Nghĩ nó quan trọng → Tìm cách cải thiện → Được thăng tiến. If-Then: Nếu chán → Hỏi "Làm thế nào tốt hơn?"'},
+{front:'Khi ai đó nói "Điều đó không thể"…',back:'→ Nhớ: Người quan trọng KHÔNG BAO GIỜ cười nhạo ý tưởng lớn. Hãy tìm cách, đừng tìm lý do. If-Then: Nếu bị cản → Xem đó là động lực, chứng minh họ sai.'},
+{front:'Khi bạn trì hoãn việc quan trọng…',back:'→ Nhớ: "Ngay bây giờ" là cụm từ kỳ diệu. Ngày mai = Không bao giờ. Hãy dùng kỹ thuật "máy móc": ngồi xuống, cầm bút, bắt đầu viết. If-Then: Nếu trì hoãn → Làm 2 phút đầu, não sẽ tiếp tục.'},
+{front:'Khi bạn gặp thất bại nặng nề…',back:'→ Nhớ: Thất bại chỉ là trạng thái tinh thần. Hãy (1) Tìm bài học (2) Dừng đổ lỗi (3) Kết hợp kiên trì + thử nghiệm mới. If-Then: Nếu thất bại → Viết "Bài học" + "Bước tiếp theo".'}
+];
+
+const MISTAKES=[
+{title:'Ảo tưởng mà không hành động',desc:'Mơ lớn nhưng chỉ nằm mơ, không bước đầu tiên',fix:'Chuyển 1 mục tiêu → 1 hành động ≤5 phút NGAY HÔM NAY'},
+{title:'Viện cớ thay vì tìm cách',desc:'Nói "Tại vì…" thay cho "Làm sao để…"',fix:'Mỗi lần viện cớ → viết ra 1 hành động thay thế'},
+{title:'Để môi trường kéo xuống',desc:'Nghe theo người tiêu cực, xem nhiều tin xấu',fix:'Liệt kê 3 nguồn tiêu cực → giảm 50% thời gian tiếp xúc'},
+{title:'Sợ bị đánh giá nên không hành động',desc:'Không phát biểu, không thử, không mạo hiểm',fix:'Tuần này: phát biểu 1 ý kiến trong cuộc họp + làm 1 việc bạn sợ'},
+{title:'Tự hạ thấp bản thân',desc:'"Mình không xứng đáng", "Mình không đủ giỏi"',fix:'Viết "Quảng cáo bản thân" 5 câu → đọc to mỗi sáng'}
+];
+
+const LEADER_SIMS=[
+{scene:'Nhân viên giỏi nhất xin nghỉ vì "không thấy cơ hội phát triển".',
+opts:['Đồng ý cho nghỉ ngay','Tăng lương để giữ người','Lắng nghe, tìm hiểu nguyện vọng thực sự, tạo lộ trình phát triển','Nói: "Cậu tự quyết định"'],
+best:2,explain:'Người lãnh đạo giỏi lắng nghe và tạo triển vọng. Tiền không giữ được người — tầm nhìn và sự tôn trọng mới giữ được.'},
+{scene:'Phòng ban bạn doanh số giảm 7%, các phòng khác tăng 6%. Sếp gọi lên khiển trách.',
+opts:['Đổ lỗi cho thị trường','Chấp nhận rồi không làm gì','Phân tích nguyên nhân, lập kế hoạch cải thiện, báo cáo sếp + triển khai ngay','Xin chuyển phòng'],
+best:2,explain:'Đừng đổ lỗi, đừng ngồi yên. Hãy phân tích + hành động + báo cáo tiến độ. Sếp đánh giá cao người chủ động giải quyết vấn đề.'},
+{scene:'Trong cuộc họp, một đồng nghiệp công khai chê bai ý tưởng của bạn.',
+opts:['Phản pháo ngay lập tức','Im lặng rồi nói xấu sau lưng','Lắng nghe, cảm ơn góp ý, hỏi lại cụ thể để cải thiện','Bỏ về'],
+best:2,explain:'Người dám nghĩ lớn tập trung vào mục tiêu, không phản ứng cảm tính. Lắng nghe phản biện = thu thập "nguyên liệu thô" cho quyết định tốt hơn.'},
+{scene:'Bạn vừa được bổ nhiệm quản lý 8 người, tất cả đều lớn tuổi hơn bạn.',
+opts:['Thể hiện quyền lực ngay','Từ chối vì sợ không được tôn trọng','Tôn trọng, lắng nghe, chứng minh bằng năng lực thực tế','Yêu cầu chuyển nhân sự trẻ hơn'],
+best:2,explain:'Tuổi tác không phải trở ngại. Đừng lạm dụng quyền hành, hãy lắng nghe. Khi nhân viên thấy bạn có năng lực, tuổi tác trở nên vô nghĩa.'}
+];
+
+const CHALLENGE_30=[
+{d:1,act:'Viết "Quảng cáo bản thân" 5 câu',rm:'Bỏ 1 câu tự hạ thấp mình hay dùng'},
+{d:2,act:'Ngồi hàng ghế đầu trong cuộc họp/lớp học',rm:'Ngừng so sánh với người khác trên MXH'},
+{d:3,act:'Gọi điện cho 1 người bạn đã lâu không liên lạc',rm:'Giảm 30 phút lướt tin tức tiêu cực'},
+{d:4,act:'Viết mục tiêu 10 năm: công việc, gia đình, xã hội',rm:'Xóa từ "không thể" trong hôm nay'},
+{d:5,act:'Khen ngợi 3 người một cách chân thành',rm:'Không phàn nàn về thời tiết/giao thông'},
+{d:6,act:'Làm 1 việc bạn đang sợ/ngại nhất',rm:'Bỏ thói quen trì hoãn 1 việc cụ thể'},
+{d:7,act:'Dành 30 phút ngồi 1 mình suy ngẫm',rm:'Không ngồi lê đôi mách hôm nay'},
+{d:8,act:'Tăng tốc độ đi bộ thêm 25%',rm:'Tránh xa 1 nguồn tiêu cực'},
+{d:9,act:'Nhìn thẳng vào mắt mọi người khi nói chuyện',rm:'Bỏ thói quen cúi mặt khi giao tiếp'},
+{d:10,act:'Viết If-Then plan cho 1 mục tiêu quan trọng',rm:'Ngừng nói "Để khi nào rảnh"'},
+{d:11,act:'Chủ động giới thiệu bản thân với 1 người mới',rm:'Không chê bai ai hôm nay'},
+{d:12,act:'Phát biểu 1 ý kiến xây dựng trong cuộc họp',rm:'Bỏ cớ "Tôi không đủ giỏi"'},
+{d:13,act:'Viết 1 thất bại gần đây + bài học + bước tiếp',rm:'Ngừng đổ lỗi cho hoàn cảnh'},
+{d:14,act:'Gửi tin nhắn cảm ơn 1 người đã giúp bạn',rm:'Không kêu ca 1 ngày trọn vẹn'},
+{d:15,act:'Đọc to "Quảng cáo bản thân" trước gương',rm:'Bỏ 1 thói quen lãng phí thời gian'},
+{d:16,act:'Liệt kê 5 "nguồn vốn" quý nhất bản thân',rm:'Ngừng tự ti về ngoại hình'},
+{d:17,act:'Đề xuất 1 ý tưởng cải thiện cho công ty/nhóm',rm:'Không viện cớ sức khỏe'},
+{d:18,act:'Bắt tay nồng nhiệt + cười tươi với 5 người',rm:'Bỏ thói quen ngần ngại khi gặp mặt'},
+{d:19,act:'Viết lại mục tiêu 30 ngày tiếp theo',rm:'Loại bỏ 1 mối quan hệ tiêu cực'},
+{d:20,act:'Dành 1 tiếng làm điều bạn yêu thích nhất',rm:'Tắt thông báo MXH 4 tiếng'},
+{d:21,act:'Phân tích 80/20: việc gì tạo kết quả lớn nhất?',rm:'Cắt 1 cuộc họp/hoạt động vô ích'},
+{d:22,act:'Viết thư cho chính mình 5 năm sau',rm:'Ngừng tự trách bản thân'},
+{d:23,act:'Xung phong nhận 1 nhiệm vụ mới/khó',rm:'Bỏ thái độ "việc ai nấy làm"'},
+{d:24,act:'Đọc 1 chương sách phát triển bản thân',rm:'Không xem TV > 30 phút'},
+{d:25,act:'Tìm và kết nối 1 người thành công để học hỏi',rm:'Tránh nói xấu đồng nghiệp'},
+{d:26,act:'Review tuần: điều gì hiệu quả nhất?',rm:'Bỏ 1 thói quen "chuẩn bị quá lâu"'},
+{d:27,act:'Tự thưởng 1 điều nhỏ cho sự kiên trì',rm:'Không viện cớ tuổi tác hôm nay'},
+{d:28,act:'Lập kế hoạch tiết kiệm/đầu tư cho bản thân',rm:'Cắt 1 khoản chi không cần thiết'},
+{d:29,act:'Viết "Hợp đồng với chính mình" chính thức',rm:'Ngừng chờ đợi "thời cơ hoàn hảo"'},
+{d:30,act:'Tổng kết 30 ngày + đặt mục tiêu 90 ngày tiếp',rm:'Loại bỏ hoàn toàn 1 thói quen xấu đã chọn'}
+];
+
+// ============ PAGES ============
+const pages={
+  dash:'Dashboard',princ:'9 Nguyên Lý',audit:'Đánh Giá',exc:'Excusitis',conf:'Tự Tin',
+  quiz:'Quiz',fc:'Flashcards',goal:'Mục Tiêu',leader:'Lãnh Đạo',
+  challenge:'30 Ngày',mistakes:'Sai Lầm',settings:'Cài Đặt'
+};
+
+const NAV_ITEMS=[
+{id:'dash',label:'Home',icon:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-2.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-2.93 7.07l-2.83-2.83M6.34 6.34L3.51 3.51"/>'},
+{id:'princ',label:'Nguyên Lý',icon:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'},
+{id:'audit',label:'Đánh Giá',icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>'},
+{id:'challenge',label:'30 Ngày',icon:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+{id:'quiz',label:'Quiz',icon:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>'},
+{id:'settings',label:'Thêm',icon:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>'}
+];
+
+// ============ HELPERS ============
+function $(s,p){return(p||document).querySelector(s)}
+function $$(s,p){return[...(p||document).querySelectorAll(s)]}
+function pct(v,mx){return Math.round(v/mx*100)}
+function today(){return new Date().toISOString().slice(0,10)}
+function getStreak(){
+  if(!S.daysDone.length)return 0;
+  // daysDone stores keys like 'd1','d2'...'d30'
+  // Calculate streak = highest consecutive from d1 upward
+  let s=0;
+  for(let i=1;i<=30;i++){if(S.daysDone.includes('d'+i))s++;else break;}
+  return s;
+}
+function focusScore(){
+  const a=S.principles_done.length*10;
+  const b=S.auditDone?15:0;
+  const c=Math.min(S.daysDone.length*2,30);
+  const d=S.quizDone?15:0;
+  const e=Math.min(getStreak()*3,15);
+  const f=S.commitment?10:0;
+  const g=S.goals.length?5:0;
+  return Math.min(a+b+c+d+e+f+g,100);
+}
+function finishAudit(){S.auditDone=true;LS.save();render();return rAuditResult();}
+
+// ============ RENDER NAV ============
+function renderNav(){
+  const n=$('#nav');
+  n.innerHTML=NAV_ITEMS.map(i=>`<button onclick="go('${i.id}')" class="${S.page===i.id?'on':''}" id="nb-${i.id}"><svg viewBox="0 0 24 24">${i.icon}</svg>${i.label}</button>`).join('');
+}
+
+function go(p){S.page=p;LS.save();render();}
+
+// ============ RENDER MAIN ============
+function render(){
+  renderNav();
+  const a=$('#app');
+  switch(S.page){
+    case'dash':a.innerHTML=rDash();break;
+    case'princ':a.innerHTML=rPrinc();break;
+    case'audit':a.innerHTML=rAudit();break;
+    case'exc':a.innerHTML=rExc();break;
+    case'conf':a.innerHTML=rConf();break;
+    case'quiz':a.innerHTML=rQuiz();break;
+    case'fc':a.innerHTML=rFC();break;
+    case'goal':a.innerHTML=rGoal();break;
+    case'leader':a.innerHTML=rLeader();break;
+    case'challenge':a.innerHTML=rChallenge();break;
+    case'mistakes':a.innerHTML=rMistakes();break;
+    case'settings':a.innerHTML=rSettings();break;
+    default:a.innerHTML=rDash();
+  }
+}
+
+// ============ DASHBOARD ============
+function rDash(){
+  const fs=focusScore(),sk=getStreak(),pd=S.principles_done.length;
+  const level=fs<25?'Đang khởi động':fs<50?'Tư duy đang mở':fs<75?'Người dám nghĩ':fs<100?'Chiến binh tư duy':'🏆 Think Big Master';
+  const greeting=new Date().getHours()<12?'Chào buổi sáng':'Chào bạn';
+  return`<div class="page">
+<div class="hdr"><h1>⚡ DÁM NGHĨ LỚN</h1><p>Think Big Identity Operating System</p></div>
+<div class="card" style="background:var(--gd);border:none;color:#fff;text-align:center;padding:20px">
+  <div style="font-size:11px;opacity:.8">${greeting}${S.identity?', '+S.identity:''}</div>
+  <div style="font-size:42px;font-weight:900;margin:4px 0">${fs}<small style="font-size:16px">/100</small></div>
+  <div style="font-size:13px;font-weight:700">${level}</div>
+  <div class="pbar" style="background:#fff3;margin:10px 40px"><div style="width:${fs}%;background:#fff"></div></div>
+</div>
+
+<div class="stat" style="margin:12px 0">
+  <div><span>${sk}</span><small>🔥 Streak</small></div>
+  <div><span>${pd}/9</span><small>Nguyên lý</small></div>
+  <div><span>${S.daysDone.length}</span><small>Ngày hành động</small></div>
+  <div><span>${S.quizDone?'✅':'—'}</span><small>Quiz</small></div>
+</div>
+
+${S.commitment?`<div class="card" style="border-left:3px solid var(--c4)">
+  <div style="font-size:10px;color:var(--c4);font-weight:700">📜 CAM KẾT CỦA TÔI</div>
+  <div style="margin-top:4px;font-style:italic;font-size:13px">"${S.commitment}"</div>
+</div>`:''}
+
+<h2>🚀 Bắt đầu nhanh</h2>
+<div class="scroll-x" id="quick-start">
+  ${!S.auditDone?`<div class="card" style="border-left:3px solid var(--c3)"><h3>📊 Đánh giá tư duy</h3><p style="font-size:12px;color:var(--tx2)">20 câu hỏi khám phá sức mạnh tinh thần của bạn</p><button class="btn btn-p" style="margin-top:8px" onclick="go('audit')">Bắt đầu</button></div>`:''}
+  <div class="card" style="border-left:3px solid var(--c1)"><h3>⚡ 9 Nguyên lý cốt lõi</h3><p style="font-size:12px;color:var(--tx2)">Nền tảng tư duy dám nghĩ lớn + If-Then plan</p><button class="btn btn-p" style="margin-top:8px" onclick="go('princ')">Khám phá</button></div>
+  <div class="card" style="border-left:3px solid var(--c5)"><h3>🗓 Thử thách 30 ngày</h3><p style="font-size:12px;color:var(--tx2)">Mỗi ngày 1 hành động + 1 thói quen loại bỏ</p><button class="btn btn-g" style="margin-top:8px" onclick="go('challenge')">Tham gia</button></div>
+  <div class="card" style="border-left:3px solid var(--c6)"><h3>💊 Excusitis Detector</h3><p style="font-size:12px;color:var(--tx2)">Nhận diện & chữa trị "bệnh viện cớ"</p><button class="btn btn-s" style="margin-top:8px" onclick="go('exc')">Kiểm tra</button></div>
+</div>
+<style>@media(min-width:768px){#quick-start{display:grid;grid-template-columns:repeat(2,1fr);overflow-x:visible;flex-wrap:wrap}#quick-start>div{min-width:0}}</style>
+
+<h2>📚 Modules</h2>
+<div class="grid2">
+  <div class="card" onclick="go('quiz')" style="cursor:pointer;text-align:center"><div style="font-size:24px">🧩</div><div style="font-size:12px;font-weight:700;margin-top:4px">Quiz Tình Huống</div></div>
+  <div class="card" onclick="go('fc')" style="cursor:pointer;text-align:center"><div style="font-size:24px">🃏</div><div style="font-size:12px;font-weight:700;margin-top:4px">Flashcards</div></div>
+  <div class="card" onclick="go('goal')" style="cursor:pointer;text-align:center"><div style="font-size:24px">🎯</div><div style="font-size:12px;font-weight:700;margin-top:4px">Mục Tiêu Lớn</div></div>
+  <div class="card" onclick="go('leader')" style="cursor:pointer;text-align:center"><div style="font-size:24px">👔</div><div style="font-size:12px;font-weight:700;margin-top:4px">Giả Lập Lãnh Đạo</div></div>
+  <div class="card" onclick="go('mistakes')" style="cursor:pointer;text-align:center"><div style="font-size:24px">⚠️</div><div style="font-size:12px;font-weight:700;margin-top:4px">Sai Lầm Phổ Biến</div></div>
+  <div class="card" onclick="go('conf')" style="cursor:pointer;text-align:center"><div style="font-size:24px">💪</div><div style="font-size:12px;font-weight:700;margin-top:4px">Điểm Tự Tin</div></div>
+</div>
+<div style="text-align:center;margin-top:16px;font-size:10px;color:var(--tx3)">Ngô Cương — Think Big OS v4 — 2026</div>
+</div>`;
+}
+
+// ============ PRINCIPLES ============
+function rPrinc(){
+  return`<div class="page"><div class="hdr"><h1>⭐ 9 Nguyên Lý Cốt Lõi</h1><p>Nền tảng tư duy "Dám Nghĩ Lớn"</p></div>
+  <div class="pbar"><div style="width:${pct(S.principles_done.length,9)}%"></div></div>
+  <div style="text-align:center;font-size:11px;color:var(--tx2);margin-bottom:8px">${S.principles_done.length}/9 đã hoàn thành</div>
+  ${PRINCIPLES.map((p,i)=>{
+    const done=S.principles_done.includes(p.id);
+    return`<div class="card" style="border-left:3px solid ${done?'var(--c5)':'var(--c1)'}">
+    <div class="row" style="margin-bottom:8px"><div class="ico" style="background:${done?'var(--c5)':'var(--c1)'}22;font-size:24px">${p.icon}</div><div><div style="font-weight:700;font-size:14px">${done?'✅ ':''} ${p.title}</div><div style="font-size:11px;color:var(--tx2)">${p.sum}</div></div></div>
+    <div id="pd-${i}" class="${done?'':'hide'}">
+      <div style="font-size:12px;color:var(--tx2);margin:6px 0"><strong style="color:var(--c2)">📖 Trong sách:</strong> ${p.book}</div>
+      <div style="font-size:12px;color:var(--c7);margin:4px 0">⚠️ <strong>Dấu hiệu thiếu:</strong> ${p.sign}</div>
+      <div style="font-size:12px;color:var(--c5);margin:4px 0">🎯 <strong>Hành động ngay (≤5'):</strong> ${p.action}</div>
+      <div style="font-size:12px;color:var(--c6);margin:4px 0">🔄 <strong>If-Then:</strong> ${p.ifthen}</div>
+      <div style="font-size:12px;color:var(--c4);margin:4px 0">🔒 <strong>Cam kết:</strong> ${p.commit}</div>
+      <div style="font-size:12px;color:var(--c3);margin:4px 0">🗑 <strong>Loại bỏ:</strong> ${p.remove}</div>
+      <div style="font-size:12px;color:var(--c2);margin:6px 0;font-style:italic">💡 ${p.micro}</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="btn btn-s" style="flex:1;font-size:11px" onclick="document.getElementById('pd-${i}').classList.toggle('hide')">📖 Chi tiết</button>
+      ${!done?`<button class="btn btn-p" style="flex:1;font-size:11px" onclick="markPrinc(${p.id})">✅ Đã thực hành</button>`:`<span class="badge" style="align-self:center">Hoàn thành</span>`}
+    </div></div>`}).join('')}
+  </div>`;
+}
+function markPrinc(id){if(!S.principles_done.includes(id)){S.principles_done.push(id);LS.save();render();}}
+
+// ============ AUDIT ============
+function rAudit(){
+  if(S.auditDone)return rAuditResult();
+  const qi=S.auditAnswers.length;
+  if(qi>=AUDIT_Q.length){S.auditDone=true;LS.save();return rAuditResult();}
+  const q=AUDIT_Q[qi];
+  return`<div class="page"><div class="hdr"><h1>📊 Identity Audit</h1><p>Câu ${qi+1}/${AUDIT_Q.length}</p></div>
+  <div class="pbar"><div style="width:${pct(qi,AUDIT_Q.length)}%"></div></div>
+  <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:12px">${q.q}</div>
+  ${q.opts.map((o,j)=>`<label class="opt" onclick="answerAudit(${j})"><input type="radio" name="aq">${o}</label>`).join('')}
+  </div></div>`;
+}
+function answerAudit(j){
+  const qi=S.auditAnswers.length;
+  S.auditAnswers.push(j);
+  S.auditScore+=AUDIT_Q[qi].scores[j];
+  if(S.auditAnswers.length>=AUDIT_Q.length){S.auditDone=true;}
+  LS.save();render();
+}
+function rAuditResult(){
+  const sc=S.auditScore,mx=80,p=pct(sc,mx);
+  const lvl=p<30?{t:'🔴 Tư duy đang bị bó hẹp',d:'Bạn cần thay đổi ngay lập tức. Hãy bắt đầu với 9 nguyên lý cốt lõi.'}:
+    p<50?{t:'🟡 Có tiềm năng nhưng chưa khai phá',d:'Bạn có nền tảng nhưng nhiều rào cản tâm lý đang cản bước. Tập trung vào xây dựng tự tin + loại bỏ excusitis.'}:
+    p<75?{t:'🟢 Tư duy khá mạnh',d:'Bạn đang trên con đường đúng. Hãy nâng cấp bằng thử thách 30 ngày và If-Then plan.'}:
+    {t:'🏆 Think Big Master',d:'Tuyệt vời! Bạn có tư duy của người dám nghĩ lớn. Hãy duy trì + giúp đỡ người khác.'};
+  const weak=[];
+  AUDIT_Q.forEach((q,i)=>{if(AUDIT_Q[i].scores[S.auditAnswers[i]]<=2)weak.push(i+1);});
+  return`<div class="page"><div class="hdr"><h1>📊 Kết Quả Đánh Giá</h1></div>
+  <div class="card" style="text-align:center;background:var(--gd);border:none;color:#fff;padding:24px">
+    <div style="font-size:48px;font-weight:900">${sc}<small style="font-size:18px">/${mx}</small></div>
+    <div style="font-size:16px;font-weight:700;margin:4px 0">${lvl.t}</div>
+    <div style="font-size:12px;opacity:.85;margin-top:4px">${lvl.d}</div>
+  </div>
+  ${weak.length?`<div class="card" style="border-left:3px solid var(--c7)"><h3 style="color:var(--c7)">⚠️ Điểm cần cải thiện (câu ${weak.join(', ')})</h3><p style="font-size:12px;color:var(--tx2)">Hãy tập trung vào các nguyên lý liên quan. Xem mục "9 Nguyên Lý" và "Excusitis Detector".</p></div>`:''}
+  <div class="grid2"><button class="btn btn-p" style="width:100%" onclick="go('princ')">⭐ Xem 9 Nguyên Lý</button>
+  <button class="btn btn-s" style="width:100%" onclick="S.auditDone=false;S.auditAnswers=[];S.auditScore=0;LS.save();render()">🔄 Làm lại</button></div>
+  </div>`;
+}
+
+// ============ EXCUSITIS ============
+function rExc(){
+  return`<div class="page"><div class="hdr"><h1>💊 Excusitis Detector</h1><p>Nhận diện & chữa trị "bệnh viện cớ"</p></div>
+  ${EXCUSITIS.map((e,i)=>`<div class="card" style="border-left:3px solid var(--c3)">
+    <div class="row"><div style="font-size:28px">${e.icon}</div><div><div style="font-weight:700">${e.name}</div><div style="font-size:12px;color:var(--tx2)">${e.q}</div></div></div>
+    <div class="sep"></div>
+    <div style="font-size:12px;color:var(--c5)"><strong>💊 Thuốc chữa:</strong> ${e.cure}</div>
+  </div>`).join('')}
+  <div class="card" style="background:var(--c1)15;border:1px solid var(--c1)33">
+    <h3>🔬 Tự kiểm tra nhanh</h3>
+    <p style="font-size:12px;color:var(--tx2);margin-bottom:8px">Viết ra lý do bạn hay dùng nhất để biện hộ:</p>
+    <textarea id="exc-input" rows="2" placeholder="Ví dụ: Tôi không có thời gian vì..."></textarea>
+    <button class="btn btn-p" style="margin-top:8px;width:100%" onclick="detectExc()">🔍 Phân tích</button>
+    <div id="exc-result"></div>
+  </div></div>`;
+}
+function detectExc(){
+  const t=$('#exc-input').value.toLowerCase();
+  let type='other',msg='';
+  if(/khỏe|bệnh|mệt|đau|yếu/.test(t)){type='health';msg='Bạn đang mắc bệnh viện cớ SỨC KHỎE. Hãy nhớ: "Thà bị mòn còn hơn bị gỉ." Đừng nhắc đến bệnh tật — hãy biết ơn vì còn khỏe mạnh.';}
+  else if(/thông minh|ngu|dốt|không giỏi|không đủ|trí tuệ|bằng cấp/.test(t)){type='intelligence';msg='Bạn đang mắc bệnh viện cớ TRÍ TUỆ. Cách bạn sử dụng trí tuệ quan trọng hơn lượng thông minh. Thái độ > IQ.';}
+  else if(/già|trẻ|tuổi|muộn|sớm/.test(t)){type='age';msg='Bạn đang mắc bệnh viện cớ TUỔI TÁC. 40 tuổi = mới dùng 40%. Còn 60% sung sức phía trước! Không bao giờ quá muộn.';}
+  else if(/may|xui|rủi|số phận|duyên/.test(t)){type='luck';msg='Bạn đang mắc bệnh viện cớ MAY RỦI. Mọi thứ đều có nguyên do. Đừng mong chờ may mắn — hãy TẠO may mắn bằng chuẩn bị + hành động.';}
+  else{msg='Hãy đối chiếu với 4 loại excusitis: Sức khỏe, Trí tuệ, Tuổi tác, May rủi. Dù là lý do gì, hãy hỏi: "Người thành công có viện cớ này không?"';}
+  const act=type==='other'?'Viết ra 1 hành động cụ thể thay thế lý do này.':'🎯 Hành động ngay: Xóa lý do này và làm 1 bước nhỏ nhất NGAY BÂY GIỜ.';
+  $('#exc-result').innerHTML=`<div class="fb ${type!=='other'?'no':'ok'}" style="margin-top:10px"><strong>${type!=='other'?'⚠️ Phát hiện Excusitis!':'🔍 Phân tích'}</strong><br>${msg}<br><br><strong style="color:var(--c5)">${act}</strong></div>`;
+}
+
+// ============ CONFIDENCE ============
+function rConf(){
+  const cs=focusScore();
+  return`<div class="page"><div class="hdr"><h1>💪 Confidence Score</h1><p>Điểm tự tin dựa trên hành động thực tế</p></div>
+  <div class="card" style="text-align:center"><div style="font-size:48px;font-weight:900;background:var(--gd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${cs}</div>
+  <div class="pbar"><div style="width:${cs}%"></div></div>
+  <div style="font-size:12px;color:var(--tx2);margin-top:4px">Điểm tăng khi: thực hành nguyên lý, hoàn thành quiz, duy trì streak, viết cam kết, đặt mục tiêu</div></div>
+  <h3>📈 Cách tăng điểm</h3>
+  <div class="card" style="font-size:12px;line-height:2">
+    ☐ Hoàn thành Audit (+15)<br>☐ Thực hành 9 nguyên lý (+90)<br>☐ Hoàn thành Quiz (+15)<br>☐ Duy trì Streak (+3/ngày, max 15)<br>☐ Viết Cam kết (+10)<br>☐ Đặt Mục tiêu (+5)
+  </div>
+  <h3>🛡️ 5 Hành Động Xây Tự Tin</h3>
+  ${['Ngồi hàng ghế đầu tiên','Giao tiếp bằng mắt','Tăng tốc độ đi bộ 25%','Phát biểu ý kiến','Cười thật tươi'].map((a,i)=>`<div class="card" style="font-size:13px"><span style="color:var(--c1);font-weight:700">${i+1}.</span> ${a}</div>`).join('')}
+  </div>`;
+}
+
+// ============ QUIZ ============
+function rQuiz(){
+  if(S.quizDone)return`<div class="page"><div class="hdr"><h1>🧩 Quiz Hoàn Thành!</h1></div>
+    <div class="card" style="text-align:center;background:var(--gd);color:#fff;padding:24px"><div style="font-size:42px;font-weight:900">${S.quizScore}/${QUIZ.length}</div><div style="font-size:14px">câu đúng</div></div>
+    <button class="btn btn-s" style="width:100%;margin-top:12px" onclick="S.quizIdx=0;S.quizScore=0;S.quizDone=false;S.quizFb=null;LS.save();render()">🔄 Làm lại</button></div>`;
+  if(S.quizFb!=null){
+    const q=QUIZ[S.quizIdx];const ok=S.quizFb;
+    return`<div class="page"><div class="hdr"><h1>🧩 Quiz</h1><p>Câu ${S.quizIdx+1}/${QUIZ.length}</p></div>
+    <div class="fb ${ok?'ok':'no'}"><strong>${ok?'✅ Chính xác!':'❌ Chưa đúng!'}</strong><br>${q.fb}${q.aha?'<br><br>💡 <strong>Aha moment:</strong> Đây là khoảnh khắc nhận ra — bạn có đang tự giới hạn mình không?':''}</div>
+    <button class="btn btn-p" style="width:100%;margin-top:10px" onclick="nextQuiz()">Tiếp tục →</button></div>`;
+  }
+  const q=QUIZ[S.quizIdx];
+  return`<div class="page"><div class="hdr"><h1>🧩 Quiz Tình Huống</h1><p>Câu ${S.quizIdx+1}/${QUIZ.length}</p></div>
+  <div class="pbar"><div style="width:${pct(S.quizIdx,QUIZ.length)}%"></div></div>
+  <div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:10px">${q.q}</div>
+  ${q.opts.map((o,j)=>`<label class="opt" onclick="answerQuiz(${j})"><input type="radio" name="qq">${o}</label>`).join('')}</div></div>`;
+}
+function answerQuiz(j){
+  const ok=j===QUIZ[S.quizIdx].correct;
+  if(ok)S.quizScore++;
+  S.quizFb=ok;LS.save();render();
+}
+function nextQuiz(){
+  S.quizFb=null;S.quizIdx++;
+  if(S.quizIdx>=QUIZ.length){S.quizDone=true;}
+  LS.save();render();
+}
+
+// ============ FLASHCARDS ============
+function rFC(){
+  const fc=FLASHCARDS[S.fcIdx];
+  return`<div class="page"><div class="hdr"><h1>🃏 Flashcards</h1><p>${S.fcIdx+1}/${FLASHCARDS.length} — Nhấn để lật</p></div>
+  <div class="fc ${S.fcFlip?'flip':''}" onclick="S.fcFlip=!S.fcFlip;render()">
+    <div class="fc-inner"><div class="fc-f">${fc.front}</div><div class="fc-b"><div style="font-size:13px">${fc.back}</div></div></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button class="btn btn-s" style="flex:1" onclick="S.fcIdx=(S.fcIdx-1+FLASHCARDS.length)%FLASHCARDS.length;S.fcFlip=false;render()">← Trước</button>
+    <button class="btn btn-p" style="flex:1" onclick="S.fcIdx=(S.fcIdx+1)%FLASHCARDS.length;S.fcFlip=false;render()">Tiếp →</button>
+  </div></div>`;
+}
+
+// ============ GOALS ============
+function rGoal(){
+  return`<div class="page"><div class="hdr"><h1>🎯 Big Goal Visualizer</h1><p>Mục tiêu lớn + Bản dạng mới</p></div>
+  <div class="card">
+    <h3>👤 Tên / Bản dạng mới</h3>
+    <input type="text" id="id-name" value="${S.identity}" placeholder="Tên bạn" onchange="S.identity=this.value;LS.save()">
+    <h3 style="margin-top:12px">📜 Tuyên bố cam kết</h3>
+    <textarea id="id-commit" rows="2" placeholder="VD: Tôi là người dám nghĩ lớn. Tôi hành động ngay, không viện cớ." onchange="S.commitment=this.value;LS.save()">${S.commitment}</textarea>
+    <button class="btn btn-p" style="width:100%;margin-top:8px" onclick="S.identity=$('#id-name').value;S.commitment=$('#id-commit').value;LS.save();render()">💾 Lưu cam kết</button>
+  </div>
+  <div class="card">
+    <h3>🎯 Most Important Target (MIT)</h3>
+    <input type="text" id="goal-input" placeholder="VD: Trở thành trưởng phòng trong 2 năm">
+    <button class="btn btn-g" style="width:100%;margin-top:8px" onclick="addGoal()">+ Thêm mục tiêu</button>
+    ${S.goals.map((g,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px;background:var(--s3);border-radius:8px">
+      <span style="flex:1;font-size:13px">🎯 ${g}</span>
+      <button style="background:var(--c7);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer" onclick="S.goals.splice(${i},1);LS.save();render()">✕</button>
+    </div>`).join('')}
+  </div>
+  ${S.commitment?`<div class="card" style="border:2px solid var(--c4)"><h3>🖨 Hợp đồng với chính mình</h3>
+  <div style="font-size:12px;line-height:1.8;margin:8px 0;padding:12px;background:var(--s1);border-radius:8px">
+    <div style="text-align:center;font-weight:700;font-size:14px;margin-bottom:8px">HỢP ĐỒNG CAM KẾT</div>
+    Tôi, <strong>${S.identity||'___'}</strong>, cam kết:<br>
+    <em>"${S.commitment}"</em><br><br>
+    Mục tiêu: ${S.goals.length?S.goals.map(g=>'• '+g).join('<br>'):'(Chưa đặt)'}<br><br>
+    Ngày ký: ${today()}<br>
+    <div style="text-align:right;margin-top:12px;font-style:italic">Chữ ký: ____________</div>
+  </div>
+  <button class="btn btn-s" style="width:100%" onclick="window.print()">🖨 In / Lưu PDF</button></div>`:''}
+  </div>`;
+}
+function addGoal(){const v=$('#goal-input').value.trim();if(v){S.goals.push(v);LS.save();render();}}
+
+// ============ LEADER SIMULATOR ============
+function rLeader(){
+  const sim=LEADER_SIMS[S.leaderIdx];
+  return`<div class="page"><div class="hdr"><h1>👔 Leadership Simulator</h1><p>Tình huống ${S.leaderIdx+1}/${LEADER_SIMS.length}</p></div>
+  <div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:10px">📋 ${sim.scene}</div>
+  ${S.leaderChoice===null?sim.opts.map((o,j)=>`<label class="opt" onclick="chooseLeader(${j})"><input type="radio" name="lq">${o}</label>`).join(''):
+  sim.opts.map((o,j)=>`<div style="padding:8px 12px;margin:4px 0;border-radius:8px;font-size:13px;background:${j===sim.best?'var(--c5)22':j===S.leaderChoice&&j!==sim.best?'var(--c7)22':'var(--s3)'};border-left:3px solid ${j===sim.best?'var(--c5)':j===S.leaderChoice&&j!==sim.best?'var(--c7)':'transparent'}">${j===sim.best?'✅ ':''}${j===S.leaderChoice&&j!==sim.best?'❌ ':''}${o}</div>`).join('')+`<div class="fb ok" style="margin-top:8px">${sim.explain}</div>`}
+  </div>
+  ${S.leaderChoice!==null?`<button class="btn btn-p" style="width:100%" onclick="S.leaderIdx=(S.leaderIdx+1)%LEADER_SIMS.length;S.leaderChoice=null;LS.save();render()">Tình huống tiếp →</button>`:''}
+  </div>`;
+}
+function chooseLeader(j){S.leaderChoice=j;LS.save();render();}
+
+// ============ 30-DAY CHALLENGE ============
+function rChallenge(){
+  const sk=getStreak();
+  const todayStr=today();
+  const startDate=new Date();startDate.setDate(startDate.getDate()-29);
+  return`<div class="page"><div class="hdr"><h1>🗓 30-Day Think Big Protocol</h1><p>Mỗi ngày 1 hành động + 1 thói quen loại bỏ</p></div>
+  <div class="card" style="text-align:center">
+    <div class="streak-fire">🔥</div>
+    <div style="font-size:32px;font-weight:900;background:var(--gd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${sk} ngày</div>
+    <div style="font-size:12px;color:var(--tx2)">Streak liên tiếp</div>
+    <div class="pbar" style="margin:8px 20px"><div style="width:${pct(S.daysDone.length,30)}%"></div></div>
+    <div style="font-size:11px;color:var(--tx2)">${S.daysDone.length}/30 ngày hoàn thành</div>
+    <div style="display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap">
+      ${[3,7,14,30].map(m=>`<span class="badge" style="background:${S.daysDone.length>=m?'var(--c5)':'var(--s3)'};color:${S.daysDone.length>=m?'#fff':'var(--tx3)'}">${m}🔥</span>`).join('')}
+    </div>
+  </div>
+  <div class="day-grid" style="margin:12px 0">
+    ${CHALLENGE_30.map((c,i)=>{
+      const d=new Date(startDate);d.setDate(d.getDate()+i);
+      const ds=d.toISOString().slice(0,10);
+      const done=S.daysDone.includes('d'+(i+1));
+      const isToday=ds===todayStr;
+      const future=d>new Date();
+      return`<div class="day-cell ${done?'done':''} ${isToday?'today':''} ${future&&!isToday?'future':''}" title="Ngày ${i+1}: ${c.act}" onclick="showDay(${i})">${i+1}</div>`;
+    }).join('')}
+  </div>
+  <div id="day-detail"></div>
+  </div>`;
+}
+function showDay(i){
+  const c=CHALLENGE_30[i];
+  const key='d'+(i+1);
+  const done=S.daysDone.includes(key);
+  $('#day-detail').innerHTML=`<div class="card" style="border-left:3px solid ${done?'var(--c5)':'var(--c1)'}">
+    <div style="font-weight:700;font-size:14px">${done?'✅ ':''} Ngày ${i+1}</div>
+    <div style="font-size:12px;color:var(--c5);margin:6px 0">🎯 <strong>Hành động:</strong> ${c.act}</div>
+    <div style="font-size:12px;color:var(--c7);margin:6px 0">🗑 <strong>Loại bỏ:</strong> ${c.rm}</div>
+    ${!done?`<button class="btn btn-p" style="width:100%;margin-top:8px" onclick="completeDay('${key}')">✅ Hoàn thành ngày ${i+1}</button>`:`<div class="badge" style="margin-top:6px">Đã hoàn thành</div>`}
+  </div>`;
+}
+function completeDay(key){
+  if(!S.daysDone.includes(key)){S.daysDone.push(key);S.streak=getStreak();LS.save();render();}
+}
+
+// ============ MISTAKES ============
+function rMistakes(){
+  return`<div class="page"><div class="hdr"><h1>⚠️ 5 Sai Lầm Phổ Biến</h1><p>Khi cố "dám nghĩ lớn" mà thiếu phương pháp</p></div>
+  ${MISTAKES.map((m,i)=>`<div class="card" style="border-left:3px solid var(--c7)">
+    <div style="font-weight:700;font-size:14px;color:var(--c7)">${i+1}. ${m.title}</div>
+    <div style="font-size:12px;color:var(--tx2);margin:4px 0">❌ ${m.desc}</div>
+    <div style="font-size:12px;color:var(--c5);margin:4px 0">✅ <strong>Cách sửa:</strong> ${m.fix}</div>
+  </div>`).join('')}</div>`;
+}
+
+// ============ SETTINGS ============
+function rSettings(){
+  return`<div class="page"><div class="hdr"><h1>⚙️ Thêm & Cài Đặt</h1></div>
+  <h2>📚 Modules khác</h2>
+  <div class="grid2">
+    <div class="card" onclick="go('exc')" style="cursor:pointer;text-align:center"><div style="font-size:24px">💊</div><div style="font-size:12px;font-weight:700;margin-top:4px">Excusitis</div></div>
+    <div class="card" onclick="go('conf')" style="cursor:pointer;text-align:center"><div style="font-size:24px">💪</div><div style="font-size:12px;font-weight:700;margin-top:4px">Tự Tin</div></div>
+    <div class="card" onclick="go('fc')" style="cursor:pointer;text-align:center"><div style="font-size:24px">🃏</div><div style="font-size:12px;font-weight:700;margin-top:4px">Flashcards</div></div>
+    <div class="card" onclick="go('goal')" style="cursor:pointer;text-align:center"><div style="font-size:24px">🎯</div><div style="font-size:12px;font-weight:700;margin-top:4px">Mục Tiêu</div></div>
+    <div class="card" onclick="go('leader')" style="cursor:pointer;text-align:center"><div style="font-size:24px">👔</div><div style="font-size:12px;font-weight:700;margin-top:4px">Lãnh Đạo</div></div>
+    <div class="card" onclick="go('mistakes')" style="cursor:pointer;text-align:center"><div style="font-size:24px">⚠️</div><div style="font-size:12px;font-weight:700;margin-top:4px">Sai Lầm</div></div>
+  </div>
+  <h2>📊 Weekly Review</h2>
+  <div class="card">
+    <div style="font-size:12px;line-height:2.2">
+      1️⃣ Tuần này, điều gì tạo kết quả lớn nhất?<br>
+      2️⃣ Điều gì là "excusitis" tuần này?<br>
+      3️⃣ Điều gì cần cắt bỏ?<br>
+      4️⃣ Tuần tới, 1 MIT là gì?<br>
+      5️⃣ Tôi có hành động theo "If-Then" plan không?<br>
+      6️⃣ Điểm tự tin tăng hay giảm? Tại sao?<br>
+      7️⃣ Tôi có xứng đáng với danh hiệu "Người dám nghĩ lớn" không?
+    </div>
+    <textarea rows="4" placeholder="Ghi chú review tuần này…" style="margin-top:8px"></textarea>
+  </div>
+  <h2>💾 Dữ liệu</h2>
+  <div class="grid2">
+    <button class="btn btn-g" onclick="LS.exportJSON()">📤 Export JSON</button>
+    <label class="btn btn-s" style="cursor:pointer">📥 Import<input type="file" accept=".json" style="display:none" onchange="LS.importJSON(this.files[0])"></label>
+  </div>
+  <button class="btn btn-d" style="width:100%;margin-top:10px" onclick="if(confirm('Xóa tất cả dữ liệu?')){localStorage.removeItem('tbos');location.reload()}">🗑 Xóa dữ liệu</button>
+  <div style="text-align:center;margin-top:20px;font-size:10px;color:var(--tx3)">
+    Ngô Cương — Think Big Identity OS v4<br>
+    Dựa trên "Dám Nghĩ Lớn" — David J. Schwartz<br>
+    Offline 100% • Dữ liệu lưu trên thiết bị
+  </div></div>`;
+}
+
+// ============ THEME ============
+function toggleTheme(){
+  S.theme=S.theme==='d'?'l':'d';
+  document.documentElement.setAttribute('data-t',S.theme==='l'?'l':'');
+  LS.save();
+}
+
+// ============ INIT ============
+LS.load();
+if(S.theme==='l')document.documentElement.setAttribute('data-t','l');
+S.quizFb=S.quizFb||null;
+render();
+</script>
+</body>
+</html>
